@@ -2,6 +2,10 @@ export const isSafari = () => {
     return navigator.userAgent.indexOf("Safari") > -1 && navigator.userAgent.indexOf("Chrome") === -1;
 };
 
+export const isAppleWebKit = () => {
+    return navigator.userAgent.indexOf("AppleWebKit") > -1 && navigator.userAgent.indexOf("Chrome") === -1 && navigator.userAgent.indexOf("Safari") === -1;
+};
+
 export const isFirefox = () => {
     return navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
 };
