@@ -6,7 +6,7 @@ import {uploadFiles} from "../upload/index";
 import {setHeaders} from "../upload/setHeaders";
 import {afterRenderEvent} from "../wysiwyg/afterRenderEvent";
 import {input} from "../wysiwyg/input";
-import {isCtrl, isFirefox} from "./compatibility";
+import {isCtrl, isFirefox, isSafari} from "./compatibility";
 import {scrollCenter} from "./editorCommonEvent";
 import {
     getTopList,
@@ -451,18 +451,31 @@ export const fixList = (range: Range, vditor: IVditor, pElement: HTMLElement | f
     const startContainer = range.startContainer;
     const liElement = hasClosestByMatchTag(startContainer, "LI");
     if (liElement) {
-        if (!isCtrl(event) && !event.altKey && event.key === "Enter" &&
+        if (!isCtrl(event) && !event.altKey && event.key === "Enter" ) {
             // fix li 中有多个 P 时，在第一个 P 中换行会在下方生成新的 li
-            (!event.shiftKey && pElement && liElement.contains(pElement) && pElement.nextElementSibling)) {
-            if (liElement && !liElement.textContent.endsWith("\n")) {
+            if (!event.shiftKey && pElement && liElement.contains(pElement) &&
+                pElement.nextElementSibling) {
+                    console.log('fooo');
+              if (liElement && !liElement.textContent.endsWith('\n')) {
                 // li 结尾需 \n
-                liElement.insertAdjacentText("beforeend", "\n");
+                liElement.insertAdjacentText('beforeend', '\n');
+              }
+              range.insertNode(document.createTextNode('\n\n'));
+              range.collapse(false);
+              execAfterRender(vditor);
+              event.preventDefault();
+              return true;
             }
-            range.insertNode(document.createTextNode("\n\n"));
-            range.collapse(false);
-            execAfterRender(vditor);
-            event.preventDefault();
-            return true;
+            if (isSafari() && !event.shiftKey && pElement &&
+                liElement.contains(pElement) && !pElement.nextElementSibling &&
+                liElement.children.length > 1) {
+              console.log('safariri');
+              liElement.insertAdjacentHTML('afterend', `<li><wbr></li>`);
+              setRangeByWbr(vditor[vditor.currentMode].element, range);
+              execAfterRender(vditor);
+              event.preventDefault();
+              return true;
+            }
         }
 
         if (!isCtrl(event) && !event.shiftKey && !event.altKey && event.key === "Backspace" &&
