@@ -455,7 +455,6 @@ export const fixList = (range: Range, vditor: IVditor, pElement: HTMLElement | f
             // fix li 中有多个 P 时，在第一个 P 中换行会在下方生成新的 li
             if (!event.shiftKey && pElement && liElement.contains(pElement) &&
                 pElement.nextElementSibling) {
-                    console.log('fooo');
               if (liElement && !liElement.textContent.endsWith('\n')) {
                 // li 结尾需 \n
                 liElement.insertAdjacentText('beforeend', '\n');
@@ -469,7 +468,6 @@ export const fixList = (range: Range, vditor: IVditor, pElement: HTMLElement | f
             if (isAppleLike() && !event.shiftKey && pElement &&
                 liElement.contains(pElement) && !pElement.nextElementSibling &&
                 liElement.children.length > 1) {
-              console.log('safariri');
               liElement.insertAdjacentHTML('afterend', `<li><wbr></li>`);
               setRangeByWbr(vditor[vditor.currentMode].element, range);
               execAfterRender(vditor);
