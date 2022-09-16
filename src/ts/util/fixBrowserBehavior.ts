@@ -6,7 +6,7 @@ import {uploadFiles} from "../upload/index";
 import {setHeaders} from "../upload/setHeaders";
 import {afterRenderEvent} from "../wysiwyg/afterRenderEvent";
 import {input} from "../wysiwyg/input";
-import {isAppleWebKit, isCtrl, isFirefox, isSafari} from "./compatibility";
+import {isAppleLike, isCtrl, isFirefox} from "./compatibility";
 import {scrollCenter} from "./editorCommonEvent";
 import {
     getTopList,
@@ -450,7 +450,6 @@ export const execAfterRender = (vditor: IVditor, options = {
 export const fixList = (range: Range, vditor: IVditor, pElement: HTMLElement | false, event: KeyboardEvent) => {
     const startContainer = range.startContainer;
     const liElement = hasClosestByMatchTag(startContainer, "LI");
-    console.log(isSafari() || isAppleWebKit());
     if (liElement) {
         if (!isCtrl(event) && !event.altKey && event.key === "Enter" ) {
             // fix li 中有多个 P 时，在第一个 P 中换行会在下方生成新的 li
@@ -467,8 +466,7 @@ export const fixList = (range: Range, vditor: IVditor, pElement: HTMLElement | f
               event.preventDefault();
               return true;
             }
-            let isAppleLike = isSafari() || isAppleWebKit();
-            if (isAppleLike && !event.shiftKey && pElement &&
+            if (isAppleLike() && !event.shiftKey && pElement &&
                 liElement.contains(pElement) && !pElement.nextElementSibling &&
                 liElement.children.length > 1) {
               console.log('safariri');
